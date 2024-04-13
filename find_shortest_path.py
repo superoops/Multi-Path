@@ -15,31 +15,54 @@ edges = [(1, 2), (1, 3), (1, 4), (2, 3),  (2, 4), (3, 4), (3, 5), (3, 6),
 #添加边
 G.add_edges_from(edges)
 
-
-# 定义函数来查找所有最短路径
-def find_all_shortest_paths(graph, source, target):
-    # 使用 networkx 的 all_shortest_paths 函数找到所有最短路径
-    shortest_paths = nx.all_shortest_paths(graph, source=source, target=target)
-    return list(shortest_paths)
-
-
 # 起点和终点
 start_node = 1
 end_node = 12
 
-# 找到所有最短路径
-all_shortest_paths = find_all_shortest_paths(G, start_node, end_node)
-#print(all_shortest_paths)
+def find_top5_shortest_path(G, start_node, end_node):
+    # 使用networkx找出所有简单路径
+    all_paths = list(nx.all_simple_paths(G, source=start_node, target=end_node))
 
-# 将所有路径转换为列表的列表，以便更容易处理
-shortest_paths_list = [list(path) for path in all_shortest_paths]
-#print(shortest_paths_list)
+    # 根据路径长度排序
+    sorted_paths = sorted(all_paths, key=lambda path: len(path) - 1)
 
-# 打印所有最短路径
-print("All shortest paths from {} to {}:".format(start_node, end_node))
-for path in shortest_paths_list:
-    print(path)
+    # 获取前5条最短的路径（如果不足5条，则选择所有）
+    top_5_shortest_paths = sorted_paths[:5]
 
-# 统计路径的数量
-num_paths = len(shortest_paths_list)
-print("\nNumber of shortest paths: {}".format(num_paths))
+    # 如果找到的路径数量少于5条，则只返回找到的路径
+    paths_set = all_paths[:5] if len(all_paths) >= 5 else all_paths
+
+    # for index, path in enumerate(top_5_shortest_paths, start=1):
+    #     print(f"Path {index}: {path}, Length: {len(path) - 1}")
+
+    num_paths = len(paths_set)
+    #print("\nNumber of shortest paths: {}".format(num_paths))
+
+    return top_5_shortest_paths
+
+#find_top5_shortest_path(G,start_node, end_node)
+
+def find_shortest_path(G, start_node, end_node):
+    # 找到所有最短路径
+    all_shortest_paths = nx.all_shortest_paths(G, start_node, end_node)
+    # print(all_shortest_paths)
+
+    # 将所有路径转换为列表的列表，以便更容易处理
+    shortest_paths_list = [list(path) for path in all_shortest_paths]
+    # print(shortest_paths_list)
+
+    shortest_path_len = len(shortest_paths_list[0])-1
+    #print(f"最短路径长度为：{shortest_path_len}")
+
+    # 打印所有最短路径
+    # print("All shortest paths from {} to {}:".format(start_node, end_node))
+    # for path in shortest_paths_list:
+    #     print(path)
+
+    # 统计路径的数量
+    num_paths = len(shortest_paths_list)
+    #print("\n最短路径数量为: {}".format(num_paths))
+
+    return shortest_paths_list, shortest_path_len
+
+#find_shortest_path(G,start_node, end_node)
